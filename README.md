@@ -1,8 +1,8 @@
-site-supervisor
+site-watcher
 ===============
 
 # description
-Keep a watch on a web site, supervisor will notice you if this web site's contents changed.
+Keep a watch on a web site, watcher will notice you if this web site's contents changed.
 
 # usage
 You could use it to write a spider, which could keep a watch on many sites. 
