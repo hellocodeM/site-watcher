@@ -13,7 +13,7 @@ function bootstrap(sites, options, cb) {
 	if (options.silent) robotConfig.silent = options.silent;
 
 	// push all urls into the sitesQueue
-	var now = new Date();
+	var now = new Date().toString();
 	sites.forEach(function(url) { 
 		sitesQueue.push(new Site(url, now));
 	});
