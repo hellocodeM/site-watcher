@@ -1,15 +1,24 @@
-var request = require("request");
+var request = require('request');
+var color = require('colors');
 
 var sitesQueue = [];
 var robotConfig = {
-	interval : 10 * 1000
+	interval : 10 * 1000,
+	silent: false
 };
 
 function bootstrap(sites, options, cb) {
+	// initialize configuration
+	if (options.interval) robotConfig.interval = options.interval;
+	if (options.silent) robotConfig.silent = options.silent;
+
+	// push all urls into the sitesQueue
 	var now = new Date();
 	sites.forEach(function(url) { 
 		sitesQueue.push(new Site(url, now));
 	});
+
+	// run the watcher
 	run(sitesQueue, cb);
 }
 
@@ -28,13 +37,22 @@ function run(queue, cb) {
 
 function fetch(site, cb) {
 	request.head(site, function(err, res) {
+		site.headers['If-Modified-Since'] = res.headers['last-modified'] ||
+											res.headers['Last-Modified'] || new Date().toString();
+		var color = "";
+		switch(res.statusCode) {
+			case 200:
+				color = "green"; break;
+			case 304:
+				color = "yellow"; break;
+			default:
+				color = "red";
+		}
+
+		if (!robotConfig.silent) 
+			console.log(String(res.statusCode)[color], site.headers['If-Modified-Since'][color], site.url);
 		if(!err && res.statusCode == 200) {
-			site.headers['If-Modified-Since'] = res.headers['last-modified'] ||
-												res.headers['Last-Modified'] || "";
-			console.log(res.statusCode, site.headers['If-Modified-Since'], site.url);
 			cb(site.url);
-		} else {
-			console.log(res.statusCode + ":\t" + site.url);
 		}
 	});
 }
