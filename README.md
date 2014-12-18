@@ -2,7 +2,7 @@ site-supervisor
 ===============
 
 # description
-Keep a watch on a web site, supervisor will notice you if this web site changed.
+Keep a watch on a web site, supervisor will notice you if this web site's contents changed.
 
 # usage
 You could use it to write a spider, which could keep a watch on many sites. 
