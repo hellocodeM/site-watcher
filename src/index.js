@@ -1,5 +1,5 @@
 var request = require('request');
-var color = require('colors');
+var colors = require('colors');
 
 var sitesQueue = [];
 var robotConfig = {
@@ -37,26 +37,35 @@ function run(queue, cb) {
 
 function fetch(site, cb) {
 	request.head(site, function(err, res) {
-		site.headers['If-Modified-Since'] = res.headers['last-modified'] ||
-											res.headers['Last-Modified'] || new Date().toString();
-		var color = "";
-		switch(res.statusCode) {
-			case 200:
-				color = "green"; break;
-			case 304:
-				color = "yellow"; break;
-			default:
-				color = "red";
-		}
-
-		if (!robotConfig.silent) 
-			console.log(String(res.statusCode)[color], site.headers['If-Modified-Since'][color], site.url);
-		if(!err && res.statusCode == 200) {
+		if (!err) {
+			site.headers['If-Modified-Since'] = res.headers['last-modified'] ||
+				res.headers['Last-Modified'] || new Date().toString();
+			var color = "";
+			switch(res.statusCode) {
+				case 200:
+					color = "green"; break;
+				case 304:
+					color = "yellow"; break;
+				default:
+					color = "red";
+			}
 			cb(site.url);
+			log(String(res.statusCode)[color], site.headers['If-Modified-Since'][color], site.url);
+		} else {
+			console.error(site.url.red);
+			console.error(err);
 		}
 	});
 }
 
+function log() {
+	var msg = '';
+	for (var i = 0; i < arguments.length; i++) 
+		msg += arguments[i] + "\t";
+	if (!robotConfig.silent) {
+		console.log(msg);
+	}
+}
 /**
  * @desc: each Site object has a url and last modified time, to judge if the site has modified.
  */
@@ -64,7 +73,8 @@ function fetch(site, cb) {
 function Site(url, lastModified) {
 	this.url = url;
 	this.headers = {
-		'If-Modified-Since': lastModified
+		'If-Modified-Since': lastModified,
+		'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'
 	};
 }
 

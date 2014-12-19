@@ -1,13 +1,14 @@
 {
   "name": "site-watcher",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "watch a site",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
-  "dependicies": {
-	  "request": "*"
+  "dependencies": {
+	  "request": "*",
+	  "colors": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
