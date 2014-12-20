@@ -1,4 +1,4 @@
-var watcher = require("../src")
+var watcher = require("../lib")
 var sites = ["http://wanghuanming.com", 
 			"http://coolshell.cn", 
 			"http://ruanyifeng.com",
